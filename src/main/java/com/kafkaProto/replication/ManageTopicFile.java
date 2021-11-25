@@ -8,9 +8,9 @@ import java.io.IOException;
 
 public class ManageTopicFile {
     public static void CreateTopicFile(String topicName, Boolean isReplica) throws IOException {
-        // check if file exist
-        String FilePath = ReplicaServiceConfig.PATH_FULL + topicName + ReplicaServiceConfig.FORMAT_LOG;
+        String FilePath = getTopicPath(topicName);
         File temp = new File(FilePath);
+        temp.getParentFile().mkdirs();
         boolean exists = temp.exists();
         if(exists){
             // send response that topic already exists.
@@ -19,9 +19,13 @@ public class ManageTopicFile {
         }
     }
 
+    private static String getTopicPath(String TopicName){
+        String path = ReplicaServiceConfig.PATH_TOPICS + TopicName + ReplicaServiceConfig.PATH_DEFAULT_PARTITION + TopicName + ReplicaServiceConfig.FORMAT_LOG;
+        return path;
+    }
+
     public static void AppendNewMessage(String topicName, String Message) throws IOException {
-        // check if file exist
-        String FilePath = ReplicaServiceConfig.PATH_FULL + topicName + ReplicaServiceConfig.FORMAT_LOG;
+        String FilePath = getTopicPath(topicName);
         try
         {
 
