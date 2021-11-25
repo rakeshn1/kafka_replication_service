@@ -28,8 +28,8 @@ public class ManageTopicFile {
         String FilePath = getTopicPath(topicName);
         try
         {
-
             FileWriter fw = new FileWriter(FilePath,true); //the true will append the new data
+            fw.write("\n");
             fw.write(Message);//appends the string to the file
             fw.close();
         }
