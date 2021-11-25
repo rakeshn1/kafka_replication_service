@@ -34,7 +34,7 @@ public class HelloWorld {
 //        }
 
 //        ManageTopicFile.CreateTopicFile("first",false);
-        ManageTopicFile.AppendNewMessage("first", "Hello world");
+        ManageTopicFile.readTopicAtPosition("first", 2,2);
 
     }
 }

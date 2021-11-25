@@ -3,6 +3,7 @@ package com.kafkaProto.replication;
 import resources.ReplicaServiceConfig;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -38,5 +39,32 @@ public class ManageTopicFile {
             System.err.println("IOException: " + ioe.getMessage());
             // return error specifying file not exist or some other error
         }
+    }
+
+    public static String readTopicAtPosition(String topicName, int start, int end ) throws IOException {
+        FileInputStream fis = null;
+
+        try {
+            // create new file input stream
+            fis = new FileInputStream(getTopicPath(topicName));
+            // skip bytes from file input stream
+            fis.skip(start);
+            byte[] bytes = new byte[end];
+            int i = fis.read(bytes);
+            System.out.println("Total bytes read :- " + i);
+            for (byte b: bytes) {
+                char c = (char) b;
+                System.out.print(c);
+            }
+            fis.close();
+        } catch(Exception ex) {
+            // if any error occurs
+            ex.printStackTrace();
+        } finally {
+            // releases all system resources from the streams
+            if(fis!=null)
+                fis.close();
+        }
+        return null;
     }
 }
