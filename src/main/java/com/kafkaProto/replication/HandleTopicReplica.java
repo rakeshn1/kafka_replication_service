@@ -1,0 +1,77 @@
+package com.kafkaProto.replication;
+
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpPrincipal;
+import com.sun.xml.internal.ws.wsdl.writer.document.soap.Body;
+import org.json.*;
+import resources.BrokerInfo;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+public class HandleTopicReplica {
+
+    public static void handleRequest(HttpExchange exchange) throws IOException {
+        URI requestURI = exchange.getRequestURI();
+        JSONObject body = getBody(exchange);
+        String topicId = body.getString("topicName");
+        int replicationFactor = body.getInt("replicationFactor");
+
+        // TODO implement replication
+        String myIp = BrokerInfo.getMyIp();
+        List<String> hosts = BrokerInfo.getHosts();
+        List<Boolean> results = new ArrayList<>();
+        List<String> selectedHosts = new ArrayList<>();
+        for(int i=0,j=0;i<replicationFactor;j++){
+            if(!hosts.get(j).equals(myIp)){
+                results.add(CreateTopicReplica.create(hosts.get(j),topicId));
+                selectedHosts.add(hosts.get(j));
+                i++;
+            }
+        }
+        boolean allSuccess = true;
+        for(Boolean result : results){
+            if(!result){
+                allSuccess = false;
+            }
+        }
+        if(allSuccess){
+            // Send data to zookeeper
+            // req body --> {topicId:"topicName", leader:"192.168.0.1", replica:["192.168.0.1","192.168.0.1"]}
+            JSONObject zookeeperBody = new JSONObject();
+            zookeeperBody.put("topicId",topicId);
+            zookeeperBody.put("leader",myIp);
+            zookeeperBody.put("replica",selectedHosts);
+            boolean zookeeperUpdated = Zookeeper.sendTopicReplica(zookeeperBody);
+            if(zookeeperUpdated){
+                // Send response to caller api
+                String response = replicationFactor+ " replicas created for topic id "+topicId;
+                exchange.sendResponseHeaders(200, response.getBytes().length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+            }else{
+                // TODO handle zookeeper call failed
+            }
+        }else{
+            // TODO handle error case (all replicas not created)
+        }
+    }
+    private static JSONObject getBody(HttpExchange exchange) throws IOException {
+        System.out.println("-- body --");
+        InputStream is = exchange.getRequestBody();
+        Headers requestHeaders = exchange.getRequestHeaders();
+        int contentLength = Integer.parseInt(requestHeaders.getFirst("Content-length"));
+        byte[] data = new byte[contentLength];
+        int length = is.read(data);
+        String stringData = new String(data);
+        JSONObject jsonObject = new JSONObject(stringData);
+        return jsonObject;
+    }
+
+}
