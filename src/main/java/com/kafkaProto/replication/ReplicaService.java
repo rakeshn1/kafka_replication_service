@@ -13,6 +13,7 @@ public class ReplicaService {
     public static void main(String[] args) throws IOException {
         startReplicaServer();
         addTopicReplicationApi();
+        syncWithLeaderApi();
     }
 
     private static void startReplicaServer() throws IOException {
@@ -23,7 +24,17 @@ public class ReplicaService {
 
     private static void addTopicReplicationApi(){
         HttpContext context = server.createContext("/create-topic-replica");
-        context.setHandler(HandleTopicReplica::handleRequest);
+            context.setHandler(HandleTopicReplica::handleRequest);
+    }
+
+    private static void syncWithLeaderApi(){
+        HttpContext context = server.createContext("/leader-sync");
+        context.setHandler(LeaderSync::handleRequest);
+    }
+
+    private static void startPolling(){
+        HttpContext context = server.createContext("/start-polling");
+        context.setHandler(LeaderSync::handleRequest);
     }
 
 }
