@@ -1,6 +1,7 @@
 package com.kafkaProto.replication;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class HelloWorld {
@@ -18,5 +19,19 @@ public class HelloWorld {
         } else {
             System.out.println("File already exists.");
         }
+
+        // append content to file
+        try
+        {
+            String filename= "MyFile.txt";
+            FileWriter fw = new FileWriter(filename,true); //the true will append the new data
+            fw.write("add a line\n");//appends the string to the file
+            fw.close();
+        }
+        catch(IOException ioe)
+        {
+            System.err.println("IOException: " + ioe.getMessage());
+        }
+
     }
 }
