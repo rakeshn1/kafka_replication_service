@@ -4,14 +4,37 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LeaderSync {
     public static void handleRequest(HttpExchange exchange) throws IOException{
         // TODO compare offsets and send the new data back
         // req body will have latest replica offset
-
+        JSONObject body = getBody(exchange);
+        String topicId = body.getString("topicId");
+        int replicaOffset = body.getInt("replicaOffset");
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader(topicId));
+            List<String> lines = new ArrayList<>();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+            String response = "";
+            if(lines.size()>replicaOffset){
+                for(int i = replicaOffset;i<lines.size();i++){
+                    response+=lines.get(i)+System.lineSeparator();
+                }
+            }
+            exchange.sendResponseHeaders(200, response.getBytes().length);
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private static JSONObject getBody(HttpExchange exchange) throws IOException{
