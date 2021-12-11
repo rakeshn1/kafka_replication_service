@@ -1,6 +1,8 @@
 package com.kafkaProto.replication;
 
 
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class PollLeader extends Thread{
 
@@ -21,12 +23,24 @@ public class PollLeader extends Thread{
             String data = getLeaderData(this.topicId);
             if(data!=null){
                 // TODO write to log file
+                String filePath = ReplicaUtils.getTopicPath(this.topicId);
+                try
+                {
+                    FileWriter fw = new FileWriter(filePath,true); //the true will append the new data
+                    fw.write("\n");
+                    fw.write(data);
+                    fw.close();
+                }
+                catch(IOException ioe)
+                {
+                    System.err.println("IOException: " + ioe.getMessage());
+                }
             }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 
