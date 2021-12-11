@@ -1,6 +1,6 @@
 package com.kafkaProto.replication;
 
-import resources.ReplicaServiceConfig;
+import resources.ReplicaUtils;
 
 import java.io.File;
 import java.io.IOException;
