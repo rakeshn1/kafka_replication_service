@@ -34,7 +34,8 @@ public class HelloWorld {
 //        }
 
 //        ManageTopicFile.CreateTopicFile("first",false);
-        ManageTopicFile.readTopicAtPosition("first", 2,2);
+//        ManageTopicFile.readTopicAtPosition("first", 2,2);
+        ManageTopicFile.CreateTopicFile("first",true);
 
     }
 }

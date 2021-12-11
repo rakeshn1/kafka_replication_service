@@ -12,10 +12,9 @@ public class CreateTopicReplica {
         // TODO implement creating a file for the replica topic
         String FilePath = ReplicaUtils.getTopicPath(topicId);
         File temp = new File(FilePath);
-        temp.getParentFile().mkdirs();
+        temp.getParentFile().mkdirs(); // creates directory if not exist
         boolean exists = temp.exists();
         if (exists) {
-            // send response that topic already exists.
             System.out.println("Topic Already exist");
             return false;
         } else {

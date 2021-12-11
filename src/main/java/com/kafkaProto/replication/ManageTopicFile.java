@@ -11,7 +11,8 @@ public class ManageTopicFile {
     public static void CreateTopicFile(String topicName, Boolean isReplica) throws IOException {
         String FilePath = getTopicPath(topicName);
         File temp = new File(FilePath);
-        temp.getParentFile().mkdirs();
+        Boolean isCreated = temp.getParentFile().mkdirs();
+        System.out.println("file creation status : " + isCreated );
         boolean exists = temp.exists();
         if(exists){
             // send response that topic already exists.
@@ -37,7 +38,7 @@ public class ManageTopicFile {
         catch(IOException ioe)
         {
             System.err.println("IOException: " + ioe.getMessage());
-            // return error specifying file not exist or some other error
+            // return error :  file not exist or some other error
         }
     }
 
