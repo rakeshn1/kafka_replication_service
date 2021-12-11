@@ -13,7 +13,8 @@ public class ReplicaService {
     public static void main(String[] args) throws IOException {
         startReplicaServer();
         addTopicReplicationApi();
-        syncWithLeaderApi();
+        addSyncWithLeaderApi();
+        addStartPollingApi();
     }
 
     private static void startReplicaServer() throws IOException {
@@ -27,12 +28,12 @@ public class ReplicaService {
             context.setHandler(HandleTopicReplica::handleRequest);
     }
 
-    private static void syncWithLeaderApi(){
+    private static void addSyncWithLeaderApi(){
         HttpContext context = server.createContext("/leader-sync");
         context.setHandler(LeaderSync::handleRequest);
     }
 
-    private static void startPolling(){
+    private static void addStartPollingApi(){
         HttpContext context = server.createContext("/start-polling");
         context.setHandler(LeaderSync::handleRequest);
     }
