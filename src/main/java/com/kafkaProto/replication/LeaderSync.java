@@ -12,7 +12,6 @@ import resources.ReplicaUtils;
 
 public class LeaderSync {
     public static void handleRequest(HttpExchange exchange) throws IOException{
-        // TODO compare offsets and send the new data back
         // req body will have latest replica offset
         JSONObject body = getBody(exchange);
         String topicId = body.getString("topicId");

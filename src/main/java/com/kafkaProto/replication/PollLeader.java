@@ -30,7 +30,6 @@ public class PollLeader extends Thread{
         while(_forever){
             String data = getLeaderData(this.topicId);
             if(data!=null && !data.equals("\n") && data.length()>0){
-                // TODO write to log file
                 String filePath = ReplicaUtils.getTopicPath(this.topicId);
                 try
                 {
@@ -53,13 +52,12 @@ public class PollLeader extends Thread{
     }
 
     public static String getLeaderData(String topicId) {
-        // TODO hit zookeeper to get leader ip of the topic
+        // TODO change zookeeper url
         // String leaderUrl = Zookeeper.getDataFromZookeeper(topicId);
         String leaderUrl = "http://192.168.106.10:8700/leader-sync";
         int lines = ReplicaUtils.getLinesCount(ReplicaUtils.getTopicPath(topicId));
         String data = getData(leaderUrl, topicId, lines);
         System.out.println("+++++++++++++"+data);
-        // TODO hit the leader to get the new data
         return data;
     }
 
