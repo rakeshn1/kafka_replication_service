@@ -52,7 +52,7 @@ public class PollLeader extends Thread{
     }
 
     public static String getLeaderData(String topicId) {
-        // TODO change zookeeper url
+        // TODO change zookeeper url & use the IP returned by zookeeper to determine leader
         // String leaderUrl = Zookeeper.getDataFromZookeeper(topicId);
         String leaderUrl = "http://192.168.106.10:8700/leader-sync";
         int lines = ReplicaUtils.getLinesCount(ReplicaUtils.getTopicPath(topicId));
