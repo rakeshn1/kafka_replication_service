@@ -47,11 +47,11 @@ public class Zookeeper {
 
     public static String getDataFromZookeeper(String topicId){
         try {
-            String zookeeperUrl = "http://"+ReplicaServiceConfig.ZOOKEEPER_HOST+":"+ReplicaServiceConfig.ZOOKEEPER_PORT+ReplicaServiceConfig.ZOOKEEPER_GET_LEADER_ENDPOINT;
+            String zookeeperUrl = "http://"+ReplicaServiceConfig.ZOOKEEPER_HOST+":"+ReplicaServiceConfig.ZOOKEEPER_PORT+ReplicaServiceConfig.ZOOKEEPER_GET_LEADER_ENDPOINT+"/";
             System.out.println("url formed : " + zookeeperUrl);
             URL url = new URL(zookeeperUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("Failed : HTTP Error code : "

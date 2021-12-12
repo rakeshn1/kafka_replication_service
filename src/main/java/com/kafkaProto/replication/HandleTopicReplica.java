@@ -23,9 +23,8 @@ import java.util.Map;
 public class HandleTopicReplica {
 
     public static void handleRequest(HttpExchange exchange) throws IOException {
-    String data  = Zookeeper.getDataFromZookeeper("topicId");
+    String data  = PollLeader.getLeaderData("topicId");
         System.out.println("############################Getting data from Zookeeper###################");
-        System.out.println(data);
         URI requestURI = exchange.getRequestURI();
         JSONObject body = getBody(exchange);
         String topicId = body.getString("topicId");
