@@ -1,17 +1,55 @@
 package com.kafkaProto.replication;
 
+import org.json.JSONObject;
+import resources.ReplicaServiceConfig;
 import resources.ReplicaUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class CreateTopicReplica {
 
     public static Boolean create(String ip, String topicId) {
         // TODO : create API call to create new topic in specied ip broker
-
+        makeAPICall(ip,topicId);
         // new API call to create-new-topic
         return false;
+    }
+
+    private static boolean makeAPICall(String ip, String topicId){
+        try {
+            String formedUrl = ip+":"+ ReplicaServiceConfig.REPLICA_SERVICE_PORT+"/create-new-topic";
+            //String formedUrl ="http://localhost:5676/get_topic_leader/";
+            System.out.println("get data url formed : " + formedUrl);
+            URL url = new URL(formedUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            JSONObject cred = new JSONObject();
+            JSONObject parent=new JSONObject();
+            cred.put("topicID",topicId);
+
+            OutputStreamWriter wr= new OutputStreamWriter(conn.getOutputStream());
+            wr.write(cred.toString());
+            wr.flush();
+
+            StringBuilder sb = new StringBuilder();
+            int HttpResult = conn.getResponseCode();
+            if (HttpResult == HttpURLConnection.HTTP_OK) {
+               return true;
+            } else {
+                System.out.println(conn.getResponseMessage());
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Exception in NetClientGet:- " + e);
+            return false;
+        }
     }
 
     public static Boolean createNewTopic(String topicId) {

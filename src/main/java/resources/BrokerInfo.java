@@ -12,7 +12,7 @@ public final class BrokerInfo {
             "192.168.0.3"
     ));
 
-    public static String myIp = "192.168.0.0";
+    public static String myIp = "localhost";
 
     public static List<String> getHosts() {
         return hosts;
