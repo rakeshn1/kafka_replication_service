@@ -12,6 +12,7 @@ public class CreateTopicReplica {
 
     public static Boolean create(String ip, String topicId) {
         // TODO : create API call to create new topic in specied ip broker
+        System.out.println("entered create ip method");
         makeAPICall(ip,topicId);
         // new API call to create-new-topic
         return false;
@@ -19,7 +20,7 @@ public class CreateTopicReplica {
 
     private static boolean makeAPICall(String ip, String topicId){
         try {
-            String formedUrl = ip+":"+ ReplicaServiceConfig.REPLICA_SERVICE_PORT+"/create-new-topic";
+            String formedUrl = "http://"+ip+":"+ ReplicaServiceConfig.REPLICA_SERVICE_PORT+"/create-new-topic";
             //String formedUrl ="http://localhost:5676/get_topic_leader/";
             System.out.println("get data url formed : " + formedUrl);
             URL url = new URL(formedUrl);
@@ -31,7 +32,7 @@ public class CreateTopicReplica {
             conn.setDoInput(true);
             JSONObject cred = new JSONObject();
             JSONObject parent=new JSONObject();
-            cred.put("topicID",topicId);
+            cred.put("topicId",topicId);
 
             OutputStreamWriter wr= new OutputStreamWriter(conn.getOutputStream());
             wr.write(cred.toString());
