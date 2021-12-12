@@ -8,8 +8,13 @@ import java.io.IOException;
 public class CreateTopicReplica {
 
     public static Boolean create(String ip, String topicId) {
-        System.out.println("Topic " + topicId + " created on " + ip);
-        // TODO implement creating a file for the replica topic
+        // TODO : create API call to create new topic in specied ip broker
+
+        // new API call to create-new-topic
+        return false;
+    }
+
+    public static Boolean createNewTopic(String topicId) {
         String FilePath = ReplicaUtils.getTopicPath(topicId);
         File temp = new File(FilePath);
         temp.getParentFile().mkdirs(); // creates directory if not exist

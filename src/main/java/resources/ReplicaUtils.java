@@ -3,6 +3,7 @@ package resources;
 import resources.ReplicaServiceConfig;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -15,6 +16,8 @@ public class ReplicaUtils {
         int lines = 0;
         try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
             while (reader.readLine() != null) lines++;
+        } catch (FileNotFoundException e){
+            System.out.println("Topic not exist in local server");
         } catch (IOException e) {
             e.printStackTrace();
         }

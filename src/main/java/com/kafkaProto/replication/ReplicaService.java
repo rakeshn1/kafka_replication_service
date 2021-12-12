@@ -15,6 +15,7 @@ public class ReplicaService {
         addTopicReplicationApi();
         addSyncWithLeaderApi();
         addStartPollingApi();
+        addCreateNewTopic();
     }
 
     private static void startReplicaServer() throws IOException {
@@ -36,6 +37,11 @@ public class ReplicaService {
     private static void addStartPollingApi(){
         HttpContext context = server.createContext("/start-polling");
         context.setHandler(LeaderSync::handleRequest);
+    }
+
+    private static void addCreateNewTopic(){
+        HttpContext context = server.createContext("/create-new-topic");
+        context.setHandler(HandleCreateNewTopic::handleRequest);
     }
 
 }

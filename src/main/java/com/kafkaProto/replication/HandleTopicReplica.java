@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 public class HandleTopicReplica {
-
     public static void handleRequest(HttpExchange exchange) throws IOException {
     String data  = PollLeader.getLeaderData("topicId");
         System.out.println("############################Getting data from Zookeeper###################");

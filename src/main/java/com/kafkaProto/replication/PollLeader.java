@@ -55,7 +55,7 @@ public class PollLeader extends Thread{
     public static String getLeaderData(String topicId) {
         // TODO hit zookeeper to get leader ip of the topic
         String leaderUrl = Zookeeper.getDataFromZookeeper(topicId);
-         int lines = ReplicaUtils.getLinesCount(ReplicaUtils.getTopicPath(topicId));
+        int lines = ReplicaUtils.getLinesCount(ReplicaUtils.getTopicPath(topicId));
         String data = getData(leaderUrl, topicId, lines);
         System.out.println("+++++++++++++"+data);
         // TODO hit the leader to get the new data
