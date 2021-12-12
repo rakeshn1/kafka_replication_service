@@ -29,13 +29,13 @@ public class PollLeader extends Thread{
     public void run(){
         while(_forever){
             String data = getLeaderData(this.topicId);
-            if(data!=null){
+            if(data!=null && !data.equals("\n") && data.length()>0){
                 // TODO write to log file
                 String filePath = ReplicaUtils.getTopicPath(this.topicId);
                 try
                 {
                     FileWriter fw = new FileWriter(filePath,true); //the true will append the new data
-                    fw.write("\n");
+                    //fw.write("\n");
                     fw.write(data);
                     fw.close();
                 }
@@ -44,17 +44,18 @@ public class PollLeader extends Thread{
                     System.err.println("IOException: " + ioe.getMessage());
                 }
             }
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public static String getLeaderData(String topicId) {
         // TODO hit zookeeper to get leader ip of the topic
-        String leaderUrl = Zookeeper.getDataFromZookeeper(topicId);
+        // String leaderUrl = Zookeeper.getDataFromZookeeper(topicId);
+        String leaderUrl = "http://192.168.106.10:8700/leader-sync";
         int lines = ReplicaUtils.getLinesCount(ReplicaUtils.getTopicPath(topicId));
         String data = getData(leaderUrl, topicId, lines);
         System.out.println("+++++++++++++"+data);
@@ -76,8 +77,8 @@ public class PollLeader extends Thread{
             conn.setDoInput(true);
             JSONObject cred = new JSONObject();
             JSONObject parent=new JSONObject();
-            cred.put("topicID",topicId);
-            cred.put("offset", offset);
+            cred.put("topicId",topicId);
+            cred.put("replicaOffset", offset);
 
             OutputStreamWriter wr= new OutputStreamWriter(conn.getOutputStream());
             wr.write(cred.toString());
