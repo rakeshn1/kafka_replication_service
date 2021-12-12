@@ -8,6 +8,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import resources.ReplicaUtils;
+
 public class LeaderSync {
     public static void handleRequest(HttpExchange exchange) throws IOException{
         // TODO compare offsets and send the new data back
@@ -16,7 +18,7 @@ public class LeaderSync {
         String topicId = body.getString("topicId");
         int replicaOffset = body.getInt("replicaOffset");
         try{
-            BufferedReader reader = new BufferedReader(new FileReader(topicId));
+            BufferedReader reader = new BufferedReader(new FileReader(ReplicaUtils.getTopicPath(topicId)));
             List<String> lines = new ArrayList<>();
             String line = null;
             while ((line = reader.readLine()) != null) {

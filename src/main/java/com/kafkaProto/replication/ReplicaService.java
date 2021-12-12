@@ -9,7 +9,6 @@ import java.net.InetSocketAddress;
 
 public class ReplicaService {
     private static HttpServer server;
-
     public static void main(String[] args) throws IOException {
         startReplicaServer();
         addTopicReplicationApi();
@@ -43,5 +42,4 @@ public class ReplicaService {
         HttpContext context = server.createContext("/create-new-topic");
         context.setHandler(HandleCreateNewTopic::handleRequest);
     }
-
 }

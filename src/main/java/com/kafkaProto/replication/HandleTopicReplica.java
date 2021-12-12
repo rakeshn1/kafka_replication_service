@@ -21,14 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 public class HandleTopicReplica {
+
     public static void handleRequest(HttpExchange exchange) throws IOException {
-    String data  = PollLeader.getLeaderData("topicId");
-        System.out.println("############################Getting data from Zookeeper###################");
         URI requestURI = exchange.getRequestURI();
         JSONObject body = getBody(exchange);
         String topicId = body.getString("topicId");
         int replicationFactor = body.getInt("replicationFactor");
-
         String myIp = BrokerInfo.getMyIp();
         List<String> hosts = BrokerInfo.getHosts();
         List<Boolean> results = new ArrayList<>();
