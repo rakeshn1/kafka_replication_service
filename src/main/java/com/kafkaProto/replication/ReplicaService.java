@@ -4,8 +4,12 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 import resources.ReplicaServiceConfig;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+
+import static resources.ReplicaUtils.getTopicsFolder;
 
 public class ReplicaService {
     private static HttpServer server;
@@ -15,6 +19,7 @@ public class ReplicaService {
         addSyncWithLeaderApi();
         addStartPollingApi();
         addCreateNewTopic();
+        initPolling();
     }
 
     private static void startReplicaServer() throws IOException {
@@ -24,7 +29,23 @@ public class ReplicaService {
     }
 
     private static void initPolling() {
-        
+        ArrayList<String> existingTopics = getExistingTopics();
+        for(int i=0; i<existingTopics.size();i++){
+            PollLeader pollLeader = new PollLeader(existingTopics.get(i));
+            pollLeader.start();
+        }
+    }
+
+    private static ArrayList<String> getExistingTopics() {
+        File folder = new File(getTopicsFolder());
+        File[] listOfFiles = folder.listFiles();
+        ArrayList<String> topicsList = new ArrayList<>();
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                topicsList.add(listOfFiles[i].getName());
+            }
+        }
+        return topicsList;
     }
 
     private static void addTopicReplicationApi(){
