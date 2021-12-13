@@ -15,9 +15,14 @@ public class HandleCreateNewTopic {
         URI requestURI = exchange.getRequestURI();
         JSONObject body = getBody(exchange);
         String topicId = body.getString("topicId");
-        CreateTopicReplica.createNewTopic(topicId);
+        Boolean result = CreateTopicReplica.createNewTopic(topicId);
+        String response = "";
+        if(result){
+            response = "topic file created";
+        }else{
+            response = "topic creation  failed";
+        }
 
-        String response = "dummy response";
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());

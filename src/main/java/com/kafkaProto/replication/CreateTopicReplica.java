@@ -60,14 +60,14 @@ public class CreateTopicReplica {
         boolean exists = temp.exists();
         if (exists) {
             System.out.println("Topic Already exist");
-            return false;
+            return true;
         } else {
             try {
                 temp.createNewFile();
                 return true;
             } catch (IOException e) {
                 System.out.println("Creation of topic failed");
-                return true;
+                return false;
             }
 
         }

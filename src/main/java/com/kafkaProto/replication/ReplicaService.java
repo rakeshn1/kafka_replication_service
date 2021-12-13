@@ -23,6 +23,10 @@ public class ReplicaService {
         System.out.println("Replica server started on port "+ ReplicaServiceConfig.REPLICA_SERVICE_PORT);
     }
 
+    private static void initPolling() {
+        
+    }
+
     private static void addTopicReplicationApi(){
         HttpContext context = server.createContext("/create-topic-replica");
             context.setHandler(HandleTopicReplica::handleRequest);
