@@ -40,9 +40,12 @@ public class ReplicaService {
         File folder = new File(getTopicsFolder());
         File[] listOfFiles = folder.listFiles();
         ArrayList<String> topicsList = new ArrayList<>();
+        if(listOfFiles == null){
+            return topicsList;
+        }
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
-                topicsList.add(listOfFiles[i].getName());
+                topicsList.add(listOfFiles[i].getName().replace(".csv",""));
             }
         }
         return topicsList;

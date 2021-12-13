@@ -54,6 +54,7 @@ public class CreateTopicReplica {
     }
 
     public static Boolean createNewTopic(String topicId) {
+        System.out.println("Got a request for "+topicId);
         String FilePath = ReplicaUtils.getTopicPath(topicId);
         File temp = new File(FilePath);
         temp.getParentFile().mkdirs(); // creates directory if not exist
