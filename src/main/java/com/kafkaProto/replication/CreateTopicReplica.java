@@ -13,9 +13,9 @@ public class CreateTopicReplica {
     public static Boolean create(String ip, String topicId) {
         // TODO : create API call to create new topic in specied ip broker
         System.out.println("entered create ip method");
-        makeAPICall(ip,topicId);
+        return makeAPICall(ip,topicId);
         // new API call to create-new-topic
-        return false;
+//        return true;
     }
 
     private static boolean makeAPICall(String ip, String topicId){

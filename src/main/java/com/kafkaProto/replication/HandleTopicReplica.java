@@ -31,19 +31,24 @@ public class HandleTopicReplica {
         List<String> hosts = BrokerInfo.getHosts();
         List<Boolean> results = new ArrayList<>();
         List<String> selectedHosts = new ArrayList<>();
-        for(int i=0,j=0;i<replicationFactor;j++){
-            if(!hosts.get(j).equals(myIp)){
-                results.add(CreateTopicReplica.create(hosts.get(j),topicId));
-                selectedHosts.add(hosts.get(j));
-                i++;
-            }
-        }
         boolean allSuccess = true;
-        for(Boolean result : results){
-            if(!result){
-                allSuccess = false;
+        if(hosts.size() >= replicationFactor){
+            for(int i=0,j=0;i<replicationFactor;j++){
+                if(!hosts.get(j).equals(myIp)){
+                    results.add(CreateTopicReplica.create(hosts.get(j),topicId));
+                    selectedHosts.add(hosts.get(j));
+                    i++;
+                }
             }
+            for(Boolean result : results){
+                if(!result){
+                    allSuccess = false;
+                }
+            }
+        }else{
+            allSuccess = false;
         }
+
         if(allSuccess){
             // Send data to zookeeper
             // req body --> {topicId:"topicId", leader:"192.168.0.1", replica:["192.168.0.1","192.168.0.1"]}
@@ -51,25 +56,28 @@ public class HandleTopicReplica {
             zookeeperBody.put("topicId",topicId);
             zookeeperBody.put("leader",myIp);
             zookeeperBody.put("replica",selectedHosts);
-            boolean zookeeperUpdated = Zookeeper.sendTopicReplica(zookeeperBody);
+//            boolean zookeeperUpdated = Zookeeper.sendTopicReplica(zookeeperBody);
+            //TODO update zookeeper code
+            boolean zookeeperUpdated = true;
             if(zookeeperUpdated){
-                for(String host : selectedHosts){
-                    HttpClient client = HttpClient.newBuilder()
-                            .version(HttpClient.Version.HTTP_2)
-                            .connectTimeout(Duration.ofSeconds(10))
-                            .build();
-                    Map<Object, Object> reqBody = new HashMap<>();
-                    reqBody.put("topicId",topicId);
-                    HttpRequest request = HttpRequest.newBuilder()
-                            .POST(ofFormData(reqBody))
-                            .uri(URI.create("https://httpbin.org/post"))
-                            .build();
-                    try {
-                        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                // TODO check below commented code;
+//                for(String host : selectedHosts){
+//                    HttpClient client = HttpClient.newBuilder()
+//                            .version(HttpClient.Version.HTTP_2)
+//                            .connectTimeout(Duration.ofSeconds(10))
+//                            .build();
+//                    Map<Object, Object> reqBody = new HashMap<>();
+//                    reqBody.put("topicId",topicId);
+//                    HttpRequest request = HttpRequest.newBuilder()
+//                            .POST(ofFormData(reqBody))
+//                            .uri(URI.create("https://httpbin.org/post"))
+//                            .build();
+//                    try {
+//                        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
                 // Send response to caller api
                 String response = replicationFactor+ " replicas created for topic id "+topicId;
                 exchange.sendResponseHeaders(200, response.getBytes().length);
