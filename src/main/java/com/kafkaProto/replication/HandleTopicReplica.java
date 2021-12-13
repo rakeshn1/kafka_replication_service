@@ -28,10 +28,20 @@ public class HandleTopicReplica {
         String topicId = body.getString("topicId");
         int replicationFactor = body.getInt("replicationFactor");
         String myIp = BrokerInfo.getMyIp();
-        List<String> hosts = BrokerInfo.getHosts();
+        boolean allSuccess = true;
+        boolean zookeeperConnected = false;
+        List<String> hosts = new ArrayList<>();
+        try{
+            hosts  = BrokerInfo.getHosts();
+        }catch(Exception e){
+            System.out.println("Not able to fetch broker ip's from zookeeper");
+            allSuccess = false;
+            zookeeperConnected = false;
+        }
+
         List<Boolean> results = new ArrayList<>();
         List<String> selectedHosts = new ArrayList<>();
-        boolean allSuccess = true;
+
         replicationFactor = replicationFactor -1 ;
         if(hosts.size() >= replicationFactor){
             for(int i=0,j=0;i<replicationFactor;j++){
@@ -59,8 +69,9 @@ public class HandleTopicReplica {
             zookeeperBody.put("replica",selectedHosts);
 //            boolean zookeeperUpdated = Zookeeper.sendTopicReplica(zookeeperBody);
             //TODO update zookeeper code
-            boolean zookeeperUpdated = true;
-            if(zookeeperUpdated){
+//            boolean zookeeperUpdated = true;
+
+            if(zookeeperConnected){
                 // TODO check below commented code;
 //                for(String host : selectedHosts){
 //                    HttpClient client = HttpClient.newBuilder()
@@ -116,6 +127,7 @@ public class HandleTopicReplica {
         }
         return HttpRequest.BodyPublishers.ofString(builder.toString());
     }
+
 
 }
 

@@ -58,14 +58,14 @@ public class PollLeader extends Thread {
     public static String getLeaderData(String ip, String topicId) {
         String leaderUrl = "http://" + ip + ":8700/leader-sync";
         int lines = ReplicaUtils.getLinesCount(ReplicaUtils.getTopicPath(topicId));
-        String data = getData(leaderUrl, topicId, lines);
+        String data = getData(ip, topicId, lines);
         System.out.println("+++++++++++++" + data);
         return data;
     }
 
     public static String getData(String leaderUrl, String topicId, int offset) {
         try {
-            String formedUrl = leaderUrl + ":" + ReplicaServiceConfig.REPLICA_SERVICE_PORT + "/leader-sync";
+            String formedUrl = "http://"+leaderUrl + ":" + ReplicaServiceConfig.REPLICA_SERVICE_PORT + "/leader-sync";
             //String formedUrl ="http://localhost:5676/get_topic_leader/";
             System.out.println("get data url formed : " + formedUrl);
             URL url = new URL(formedUrl);
