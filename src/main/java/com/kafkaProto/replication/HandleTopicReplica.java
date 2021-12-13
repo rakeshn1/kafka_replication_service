@@ -29,7 +29,7 @@ public class HandleTopicReplica {
         int replicationFactor = body.getInt("replicationFactor");
         String myIp = BrokerInfo.getMyIp();
         boolean allSuccess = true;
-        boolean zookeeperConnected = false;
+        boolean zookeeperConnected = true;
         List<String> hosts = new ArrayList<>();
         try{
             hosts  = BrokerInfo.getHosts();

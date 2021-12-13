@@ -28,7 +28,6 @@ public final class BrokerInfo {
             DataInputStream dataOutputStream = new DataInputStream(inputStream);
             System.out.println("Sending string to the ServerSocket");
             String message = dataOutputStream.readUTF();
-            System.out.println("Host ips : " + message);
             dataOutputStream.close();
             System.out.println("Closing socket and terminating program."+ message);
             socket.close();
