@@ -31,9 +31,10 @@ public class PollLeader extends Thread {
         while (_forever) {
             // TODO change zookeeper url & use the IP returned by zookeeper to determine leader
             // String ip = Zookeeper.getDataFromZookeeper(topicId);
-            String ip = "192.168.106.10";
+            String ip = "192.168.43.53";
             if(ip == BrokerInfo.myIp){
                 _forever = false;
+                System.out.println("Polling stopped (leader is same broker)");
                 continue;
             }
             String data = getLeaderData(ip, this.topicId);
