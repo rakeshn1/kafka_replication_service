@@ -22,7 +22,7 @@ public final class BrokerInfo {
         Socket socket = null;
         List<String> hostList = new ArrayList<>();
 
-            socket = new Socket("192.168.43.31", 7778);
+            socket = new Socket(ReplicaServiceConfig.ZOOKEEPER_HOST, ReplicaServiceConfig.ZOOKEEPER_LIST_PORT);
             System.out.println("Connected!");
             InputStream inputStream = socket.getInputStream();
             DataInputStream dataOutputStream = new DataInputStream(inputStream);

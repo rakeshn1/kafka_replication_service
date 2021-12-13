@@ -16,7 +16,7 @@ public class Zookeeper {
         // TODO send topic data (leader, replica ips to zookeeper)
         try {
             // TODO Change URL to the URL received by Zookeeper team
-            String zookeeperUrl = "http://"+ReplicaServiceConfig.ZOOKEEPER_HOST+":"+ReplicaServiceConfig.ZOOKEEPER_PORT+ReplicaServiceConfig.ZOOKEEPER_GET_LEADER_ENDPOINT;
+            String zookeeperUrl = "http://"+ReplicaServiceConfig.ZOOKEEPER_HOST+":"+ReplicaServiceConfig.ZOOKEEPER_LEADER_PORT+ReplicaServiceConfig.ZOOKEEPER_GET_LEADER_ENDPOINT;
             System.out.println("Url formed : " + zookeeperUrl);
             URL url = new URL(zookeeperUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -69,7 +69,7 @@ public class Zookeeper {
 //            }
 //            conn.disconnect();
 //            return data;
-            Socket socket = new Socket("172.20.10.12", 7777);
+            Socket socket = new Socket(ReplicaServiceConfig.ZOOKEEPER_HOST, ReplicaServiceConfig.ZOOKEEPER_LEADER_PORT);
             System.out.println("Connected!");
             InputStream inputStream = socket.getInputStream();
             DataInputStream dataOutputStream = new DataInputStream(inputStream);
