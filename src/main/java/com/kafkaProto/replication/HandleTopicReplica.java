@@ -77,10 +77,10 @@ public class HandleTopicReplica {
                 os.write(response.getBytes());
                 os.close();
             }else{
-                // TODO handle zookeeper call failed
+                System.out.println("Zookeeper down!!!");
             }
         }else{
-            // TODO handle error case (all replicas not created)
+            System.out.println("All replicas not created!!!!!");
         }
     }
     private static JSONObject getBody(HttpExchange exchange) throws IOException {

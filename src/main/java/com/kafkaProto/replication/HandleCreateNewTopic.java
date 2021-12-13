@@ -15,6 +15,9 @@ public class HandleCreateNewTopic {
         URI requestURI = exchange.getRequestURI();
         JSONObject body = getBody(exchange);
         String topicId = body.getString("topicId");
+        CreateTopicReplica.createNewTopic(topicId);
+        PollLeader pollLeader = new PollLeader(topicId);
+        pollLeader.start();
         Boolean result = CreateTopicReplica.createNewTopic(topicId);
         String response = "";
         if(result){
