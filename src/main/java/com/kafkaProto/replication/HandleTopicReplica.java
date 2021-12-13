@@ -32,6 +32,7 @@ public class HandleTopicReplica {
         List<Boolean> results = new ArrayList<>();
         List<String> selectedHosts = new ArrayList<>();
         boolean allSuccess = true;
+        replicationFactor = replicationFactor -1 ;
         if(hosts.size() >= replicationFactor){
             for(int i=0,j=0;i<replicationFactor;j++){
                 if(!hosts.get(j).equals(myIp)){

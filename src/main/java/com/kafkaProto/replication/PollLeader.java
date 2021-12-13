@@ -2,6 +2,7 @@ package com.kafkaProto.replication;
 
 
 import org.json.JSONObject;
+import resources.BrokerInfo;
 import resources.ReplicaServiceConfig;
 import resources.ReplicaUtils;
 
@@ -12,12 +13,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-public class PollLeader extends Thread{
+public class PollLeader extends Thread {
 
     boolean _forever;
     String topicId;
 
-    public PollLeader(String topicId){
+    public PollLeader(String topicId) {
         this.topicId = topicId;
         this._forever = true;
     }
@@ -26,20 +27,24 @@ public class PollLeader extends Thread{
         this._forever = _forever;
     }
 
-    public void run(){
-        while(_forever){
-            String data = getLeaderData(this.topicId);
-            if(data!=null && !data.equals("\n") && data.length()>0){
+    public void run() {
+        while (_forever) {
+            // TODO change zookeeper url & use the IP returned by zookeeper to determine leader
+            // String ip = Zookeeper.getDataFromZookeeper(topicId);
+            String ip = "192.168.106.10";
+            if(ip == BrokerInfo.myIp){
+                _forever = false;
+                continue;
+            }
+            String data = getLeaderData(ip, this.topicId);
+            if (data != null && !data.equals("\n") && data.length() > 0) {
                 String filePath = ReplicaUtils.getTopicPath(this.topicId);
-                try
-                {
-                    FileWriter fw = new FileWriter(filePath,true); //the true will append the new data
+                try {
+                    FileWriter fw = new FileWriter(filePath, true); //the true will append the new data
                     //fw.write("\n");
                     fw.write(data);
                     fw.close();
-                }
-                catch(IOException ioe)
-                {
+                } catch (IOException ioe) {
                     System.err.println("IOException: " + ioe.getMessage());
                 }
             }
@@ -51,19 +56,17 @@ public class PollLeader extends Thread{
         }
     }
 
-    public static String getLeaderData(String topicId) {
-        // TODO change zookeeper url & use the IP returned by zookeeper to determine leader
-        // String leaderUrl = Zookeeper.getDataFromZookeeper(topicId);
-        String leaderUrl = "http://192.168.106.10:8700/leader-sync";
+    public static String getLeaderData(String ip, String topicId) {
+        String leaderUrl = "http://" + ip + ":8700/leader-sync";
         int lines = ReplicaUtils.getLinesCount(ReplicaUtils.getTopicPath(topicId));
         String data = getData(leaderUrl, topicId, lines);
-        System.out.println("+++++++++++++"+data);
+        System.out.println("+++++++++++++" + data);
         return data;
     }
 
     public static String getData(String leaderUrl, String topicId, int offset) {
         try {
-            String formedUrl = leaderUrl+":"+ReplicaServiceConfig.REPLICA_SERVICE_PORT+"/leader-sync";
+            String formedUrl = leaderUrl + ":" + ReplicaServiceConfig.REPLICA_SERVICE_PORT + "/leader-sync";
             //String formedUrl ="http://localhost:5676/get_topic_leader/";
             System.out.println("get data url formed : " + formedUrl);
             URL url = new URL(formedUrl);
@@ -74,11 +77,11 @@ public class PollLeader extends Thread{
             conn.setDoOutput(true);
             conn.setDoInput(true);
             JSONObject cred = new JSONObject();
-            JSONObject parent=new JSONObject();
-            cred.put("topicId",topicId);
+            JSONObject parent = new JSONObject();
+            cred.put("topicId", topicId);
             cred.put("replicaOffset", offset);
 
-            OutputStreamWriter wr= new OutputStreamWriter(conn.getOutputStream());
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(cred.toString());
             wr.flush();
 
