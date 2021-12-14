@@ -55,7 +55,7 @@ public class ReplicaService {
             return topicsList;
         }
         for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
+            if (listOfFiles[i].isFile() && listOfFiles[i].getName().contains(".csv")) {
                 topicsList.add(listOfFiles[i].getName().replace(".csv",""));
             }
         }
