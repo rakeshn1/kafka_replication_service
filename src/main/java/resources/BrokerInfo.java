@@ -3,10 +3,7 @@ package resources;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -45,24 +42,28 @@ public final class BrokerInfo {
     public static String getMyIp() {
         String ip;
         String  publicIp = null;
+        Enumeration<NetworkInterface> interfaces = null;
         try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
-                NetworkInterface iface = interfaces.nextElement();
-                if (iface.isLoopback() || !iface.isUp())
+                NetworkInterface networkInterface = interfaces.nextElement();
+                if (!networkInterface.isUp() ) {
                     continue;
-                Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                while(addresses.hasMoreElements()) {
-                    InetAddress addr = addresses.nextElement();
-                    ip = addr.getHostAddress();
-                    if(ip.length() == 14){
-                        publicIp = ip;
+                }
+                for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                    int npf = interfaceAddress.getNetworkPrefixLength();
+                    InetAddress address = interfaceAddress.getAddress();
+                    InetAddress broadcast = interfaceAddress.getBroadcast();
+                    if (broadcast == null && npf != 8) {
+//                    System.out.println(String.format("IPv6: %s; Network Prefix Length: %s", address, npf));
+                    } else if (broadcast != null){
+                        publicIp = address.toString().replace("/","");
+                        System.out.println("MyIP: "+publicIp);
                     }
-                    System.out.println(iface.getDisplayName() + " " + ip);
                 }
             }
         } catch (SocketException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         if(publicIp == null){
             return myIp;
