@@ -9,11 +9,22 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
+import static resources.ReplicaServiceConfig.getZookeeperHost;
+import static resources.ReplicaServiceConfig.setZookeeperIP;
 import static resources.ReplicaUtils.getTopicsFolder;
 
 public class ReplicaService {
     private static HttpServer server;
     public static void main(String[] args) throws IOException {
+        if (args.length > 0)
+        {
+            setZookeeperIP(args[0]);
+            System.out.println("zookeeper ip : " + getZookeeperHost());
+        }
+        else{
+            System.out.println("Enter zookeeper ip in args");
+           System.exit(0);
+        }
         startReplicaServer();
         addTopicReplicationApi();
         addSyncWithLeaderApi();

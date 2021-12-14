@@ -9,6 +9,14 @@ public final class ReplicaServiceConfig {
     public final static String PATH_FULL = PATH_TOPICS + PATH_DEFAULT_PARTITION;
     public final static int ZOOKEEPER_LEADER_PORT = 7777;
     public final static int ZOOKEEPER_LIST_PORT = 7778;
-    public final static String ZOOKEEPER_HOST = "192.168.43.31";
+    public static String ZOOKEEPER_HOST = "192.168.43.31";
     public final static String ZOOKEEPER_GET_LEADER_ENDPOINT = "/get_topic_leader";
+
+    public static void setZookeeperIP (String ip) {
+        ZOOKEEPER_HOST = ip;
+    }
+    public static String getZookeeperHost () {
+        return ZOOKEEPER_HOST;
+    }
+
 }
