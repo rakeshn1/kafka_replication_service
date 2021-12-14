@@ -3,9 +3,13 @@ package resources;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 public final class BrokerInfo {
@@ -37,6 +41,31 @@ public final class BrokerInfo {
     }
 
     public static String getMyIp() {
-        return myIp;
+        String ip;
+        String  publicIp = null;
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                if (iface.isLoopback() || !iface.isUp())
+                    continue;
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while(addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    ip = addr.getHostAddress();
+                    if(ip.length() == 14){
+                        publicIp = ip;
+                    }
+                    System.out.println(iface.getDisplayName() + " " + ip);
+                }
+            }
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+        if(publicIp == null){
+            return myIp;
+        }else{
+            return publicIp;
+        }
     }
 }
