@@ -34,6 +34,7 @@ public final class BrokerInfo {
             socket.close();
             message = message.replace("[","");
             message = message.replace("]","");
+            message = message.replace(" ","");
             hostList =  Arrays.asList(message.split(","));
 
         return hostList;
